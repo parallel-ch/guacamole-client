@@ -130,6 +130,9 @@ angular.module('client').directive('guacClient', [function guacClient() {
          * @type Guacamole.Touch
          */
         const touch = new Guacamole.Touch(displayContainer);
+		
+        const defaultOffsetWidth = 100;
+        const defaultOffsetHeight = 100;
 
         /**
          * Updates the scale of the attached Guacamole.Client based on current window
@@ -141,8 +144,8 @@ angular.module('client').directive('guacClient', [function guacClient() {
 
             // Calculate scale to fit screen
             $scope.client.clientProperties.minScale = Math.min(
-                main.offsetWidth  / Math.max(display.getWidth(),  1),
-                main.offsetHeight / Math.max(display.getHeight(), 1)
+                getMainOffsetWidth()  / Math.max(display.getWidth(),  1),
+                getMainOffsetHeight() / Math.max(display.getHeight(), 1)
             );
 
             // Calculate appropriate maximum zoom level
@@ -170,8 +173,8 @@ angular.module('client').directive('guacClient', [function guacClient() {
             const mouse_view_y = mouseState.y + displayContainer.offsetTop  - main.scrollTop;
 
             // Determine viewport dimensions
-            const view_width  = main.offsetWidth;
-            const view_height = main.offsetHeight;
+            const view_width  = getMainOffsetWidth();
+            const view_height = getMainOffsetHeight();
 
             // Determine scroll amounts based on mouse position relative to document
 
@@ -269,6 +272,18 @@ angular.module('client').directive('guacClient', [function guacClient() {
             display.showCursor(false);
             client.sendTouchState(event.state, true);
 
+        };
+
+        const getMainOffsetWidth = function getMainOffsetWidth() {
+            if(main.offsetWidth == null || main.offsetWidth < defaultOffsetWidth)
+                return defaultOffsetWidth;
+            return main.offsetWidth;
+        };
+
+        const getMainOffsetHeight = function getMainOffsetHeight() {
+            if(main.offsetHeight == null || main.offsetHeight < defaultOffsetHeight)
+                return defaultOffsetHeight;
+            return main.offsetHeight;
         };
 
         // Attach any given managed client
@@ -399,14 +414,14 @@ angular.module('client').directive('guacClient', [function guacClient() {
         $scope.mainElementResized = function mainElementResized() {
 
             // Send new display size, if changed
-            if (client && display && main.offsetWidth && main.offsetHeight) {
+            if (client && display && getMainOffsetWidth() && getMainOffsetHeight()) {
 
                 // Connect, if not already connected
-                ManagedClient.connect($scope.client, main.offsetWidth, main.offsetHeight);
+                ManagedClient.connect($scope.client, getMainOffsetWidth(), getMainOffsetHeight());
 
                 const pixelDensity = $window.devicePixelRatio || 1;
-                const width  = main.offsetWidth  * pixelDensity;
-                const height = main.offsetHeight * pixelDensity;
+                const width  = getMainOffsetWidth()  * pixelDensity;
+                const height = getMainOffsetHeight() * pixelDensity;
 
                 if (display.getWidth() !== width || display.getHeight() !== height)
                     client.sendSize(width, height);
