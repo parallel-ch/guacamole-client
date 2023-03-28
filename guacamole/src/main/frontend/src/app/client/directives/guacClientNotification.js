@@ -273,13 +273,8 @@ angular.module('client').directive('guacClientNotification', [function guacClien
 
             // Disconnected
             else if (connectionState === ManagedClientState.ConnectionState.DISCONNECTED) {
-                notifyConnectionClosed({
-                    title   : "CLIENT.DIALOG_HEADER_DISCONNECTED",
-                    text    : {
-                        key : "CLIENT.TEXT_CLIENT_STATUS_" + connectionState.toUpperCase()
-                    },
-                    actions : actions
-                });
+				authenticationService.logout()
+                ['catch'](requestService.IGNORE);
             }
 
             // Hide status for all other states

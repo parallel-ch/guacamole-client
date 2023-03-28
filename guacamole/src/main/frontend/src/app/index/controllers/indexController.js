@@ -311,8 +311,8 @@ angular.module('index').controller('indexController', ['$scope', '$injector',
     // Replace the overall user interface with an informational message if the
     // user has manually logged out
     $scope.$on('guacLogout', function loggedOut() {
-        $scope.applicationState = ApplicationState.LOGGED_OUT;
-        $scope.reAuthenticating = false;
+        $scope.applicationState = ApplicationState.AWAITING_CREDENTIALS;
+        $scope.reAuthenticate();
     });
 
     // Ensure new pages always start with clear keyboard state
