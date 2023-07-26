@@ -382,28 +382,29 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
 
         // Get new client instance
         var client = new Guacamole.Client(tunnel);
-		
+
         // Anpassungen von Parallel für den IP austausch via Pipe
         client.onpipe = function(stream, mimetype, name) {
+            try{
+                // Wenn der name der Pipe mit der Variable PI_PIPE_NAME übereinstimmt, wird die Pipe akzeptiert
+                if (name == PI_PIPE_NAME) {
 
-            // Wenn der name der Pipe mit der Variable PI_PIPE_NAME übereinstimmt, wird die Pipe akzeptiert
-            if (name == PI_PIPE_NAME) {
+                    var reader = new Guacamole.StringReader(stream);
+                    reader.ontext = function(text) {
 
-                var reader = new Guacamole.StringReader(stream);
-                reader.ontext = function(text) {
+                        // Wenn der empfangende Text "GET_IP" ist wird geantwortet
+                        if(text == "GET_IP"){
 
-                    // Wenn der empfangende Text "GET_IP" ist wird geantwortet
-                    if(text == "GET_IP"){
+                            // Output Pipe und Writer instanzieren
+                            var pipe = client.createPipeStream("text/plain", name);
+                            var writer = new Guacamole.StringWriter(pipe);
 
-                        // Output Pipe und Writer instanzieren
-                        var pipe = client.createPipeStream("text/plain", name);
-                        var writer = new Guacamole.StringWriter(pipe);
-
-                        // Variable DEVICE_IP senden
-                        writer.sendText(DEVICE_IP);
-                    }
-                };
-            }
+                            // Variable DEVICE_IP senden
+                            writer.sendText(DEVICE_IP);
+                        }
+                    };
+                }
+            } catch (err) {}
         };
 
         // Associate new managed client with new client and tunnel
