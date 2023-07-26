@@ -1,0 +1,15 @@
+version: '2.0'
+
+services:
+    pi_webgw_build:
+        container_name: pi_webgw_build
+        build:
+            context: .
+            dockerfile: Dockerfile
+        network_mode: host
+        volumes:
+        - ./parallel-web-gateway-client.zip:/etc/source/parallel-web-gateway-client.zip
+        - ./bin:/etc/bin:delegated
+        - ./docker-entrypoint.sh:/etc/docker-entrypoint.sh
+        entrypoint: /etc/docker-entrypoint.sh
+        
