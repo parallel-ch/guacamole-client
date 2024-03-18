@@ -1,0 +1,11 @@
+Anforderungen:
+- Docker Desktop muss mit WSL 2 installiert sein
+- Docker Desktop Engine muss laufen
+
+Ablauf:
+- Inhalt von parallel-web-gateway-client zippen
+- parallel-web-gateway-client.zip ins Verzeichnis build-container kopieren
+- cmd im Verzeichnis build-container starten
+- Befehl "docker compose up" ausführen
+- Nach erfolgreichem buidlen den Befehl "docker compose down" ausführen
+- Das .war file liegt danach in build-container/bin
